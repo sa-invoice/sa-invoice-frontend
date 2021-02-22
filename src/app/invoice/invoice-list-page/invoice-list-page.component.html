@@ -1,0 +1,30 @@
+<div class="invoice-section"> 
+
+    <!-- <div fxLayout="row" fxLayoutAlign="end center">
+        <button mat-raised-button color="warn" type="button" [routerLink]="['/', 'invoice', 'invoice-generate']"> New Invoice </button>
+    </div> -->
+
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-2 margin-top-2">
+        <ul class="list-unstyled list-inline margin-left-auto menu">
+            <li> <a routerLink="/products"> Products List </a> </li>
+            <li> <a routerLink="/products/add"> Add New Product </a> </li>
+            <li> <a routerLink="/invoice/invoice-list"> Invoice List </a> </li>
+            <li> <a routerLink="/invoice/invoice-generate"> Generate Invoice </a> </li>
+        </ul>
+    </div>
+
+    <h2> List of Invoices </h2>
+
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-2 margin-top-2"> 
+        <span fxFlex="30"> <b> Date </b> </span> 
+        <span fxFlex="30"> <b> Client Name </b> </span>
+        <span fxFlex="30"> <b> View </b> </span>
+    </div>
+        
+    <div *ngFor="let invoice of invoiceList" fxLayout="row" fxLayoutAlign="space-between"> 
+        <span fxFlex="30"> {{ invoice.created_at }} </span>
+        <span fxFlex="30"> {{ invoice.client_name }} </span>
+        <a fxFlex="30" color="primary" mat-button target="_blank" [href]="'https://invoicebe.herokuapp.com/api/invoices/'+ invoice.invoice_id + '/download'" class="padding-left-0 text-align-left"> Click to view </a>
+    </div>
+</div>
+  

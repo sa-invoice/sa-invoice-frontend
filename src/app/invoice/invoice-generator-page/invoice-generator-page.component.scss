@@ -1,0 +1,48 @@
+
+.invoice-items {
+    width: 100%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.align-center-screen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+.spinner-wrapper {
+    background: rgb(245 245 220 / 50%);
+}
+
+.final-amount-row {
+    text-align: right;
+    padding: 1em 2em;
+    font-size: 20px;
+    font-weight: 500;
+    border-bottom: solid 1px #ccc;
+    background: beige;
+    margin-bottom: 0;
+    span {
+        min-width: 120px;
+        display: inline-block;
+       &:first-child {
+        text-align: left;
+       } 
+    }
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  .text-right {
+      text-align: right;
+  }
+
+  .text-center {
+      text-align: center;
+  }

@@ -1,0 +1,7 @@
+<h1 mat-dialog-title>Invoice Created Successfully! </h1> 
+<p> Click on view invoice to open the invoice in a new tab. </p>
+<div mat-dialog-actions style="text-align: right;"> 
+  <button mat-stroked-button color="secondary" (click)="onCancel()">No Thanks</button>
+    <!-- <button mat-button (click)="downloadInvoice(data.invoiceId)">Download as PDF</button>   -->
+    <a mat-button color="primary" [href]="'https://invoicebe.herokuapp.com/api/invoices/'+ data.invoiceId + '/download'" target="_blank" style="margin-left: 1em;">View Invoice</a> 
+</div> 

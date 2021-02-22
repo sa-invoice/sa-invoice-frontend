@@ -1,0 +1,170 @@
+ <div class="invoice-section">
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-2 margin-top-2">
+        <ul class="list-unstyled list-inline margin-left-auto menu">
+            <li> <a routerLink="/products"> Products List </a> </li>
+            <li> <a routerLink="/products/add"> Add New Product </a> </li>
+            <li> <a routerLink="/invoice/invoice-list"> Invoice List </a> </li>
+            <li> <a routerLink="/invoice/invoice-generate"> Generate Invoice </a> </li>
+        </ul>
+    </div>
+    
+    <div class="spinner-wrapper" *ngIf="showLoader">
+        <mat-spinner class="example-margin align-center-screen" color="primary" mode="indeterminate" ></mat-spinner>
+    </div>
+
+    <!-- <div fxLayout="row" fxLayoutAlign="end center"> 
+        <button mat-raised-button color="warn" type="button" [routerLink]="['/', 'products', 'add']"> Add Product </button>
+    </div> -->
+       
+    <h2> Invoice Generator </h2>
+
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="clientType" (click)="resetData()">
+        <mat-radio-button value="existing"> Existing Client </mat-radio-button>
+        <mat-radio-button value="new"> New Client </mat-radio-button>
+    </mat-radio-group>
+
+
+    <form [formGroup]="clientForm" class="full-width margin-top-2" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="1em" *ngIf="clientType == 'new'">
+        
+        
+        <mat-form-field appearance="outline" fxFlex="30">
+            <mat-label> Client Name </mat-label>
+            <input type="text" matInput placeholder="Name" formControlName="client_name">
+        </mat-form-field>
+
+        <mat-radio-group aria-label="Is Client Taxable" formControlName="is_client_taxable" fxFlex="30" (change)="isTaxable($event)">
+            <mat-label> Is Client Taxable </mat-label>
+            <mat-radio-button [value]="true"> Yes </mat-radio-button>
+            <mat-radio-button [value]="false"> No </mat-radio-button>
+        </mat-radio-group>
+        
+       
+        <!-- <mat-form-field appearance="outline" fxFlex="30">
+            <mat-label> Client ID </mat-label>
+            <input type="text" matInput placeholder="ID" formControlName="client_id">
+        </mat-form-field> -->
+        
+        <mat-form-field appearance="outline" fxFlex="30">
+            <mat-label> Client Tin </mat-label>
+            <input type="text" matInput placeholder="Tin" formControlName="client_tin">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" fxFlex="30">
+            <mat-label> Client City </mat-label>
+            <input type="text" matInput placeholder="city" formControlName="client_city">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" fxFlex="30">
+        <mat-label> Client Address </mat-label>
+            <input type="text" matInput placeholder="Address" formControlName="client_address">
+        </mat-form-field>
+    </form>
+
+    <form [formGroup]="invoiceForm" (ngSubmit)="generateInvoice()" class="full-width" fxLayout="row wrap" fxLayoutAlign="start center">
+           
+            <mat-form-field appearance="outline" *ngIf="clientType == 'existing'" class="margin-top-2" fxFlex="30">
+                <mat-label> Select Client </mat-label>
+                <mat-select required formControlName="client_id" >
+                <mat-option *ngFor="let client of clients" [value]="client.client_id">
+                    {{client.client_name}}
+                </mat-option>
+                </mat-select>
+            </mat-form-field> 
+            
+            <div *ngIf="invoiceForm.get('invoice_items')['controls'].length > 0" formArrayName="invoice_items" class="mat-elevation-z2 form-group margin-top-2 invoice-items" fxFlex="100">
+                
+                <div *ngFor="let item of invoiceForm.get('invoice_items')['controls']; let i=index" [formGroupName]="i" fxLayout="row" class="padding-1" fxLayoutAlign="center" fxLayoutGap="15px">
+
+                    <mat-form-field appearance="outline">
+                        <mat-label> Select Product </mat-label>
+                        <mat-select required (selectionChange)="populateProductValues($event,i)">
+                        <mat-option *ngFor="let product of products" [value]="product">
+                            {{product.product_name}}
+                        </mat-option>
+                        </mat-select>
+                    </mat-form-field>  
+
+                    <mat-form-field appearance="outline">
+                        <mat-label> Unit Price </mat-label>
+                        <input type="number" matInput placeholder="Price" [value]="addedProducts[i]?.product_price" readonly>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label> Discount (%) </mat-label>
+                        <input type="number" matInput placeholder="Discount" min="0" max="100" formControlName="product_discount_percent" (focusout)="getCalculations()">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label> Markup (%) </mat-label>
+                        <input type="number" matInput placeholder="Markup" formControlName="product_markup_percent" (focusout)="getCalculations()">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label> Quantity </mat-label>
+                        <input type="number" matInput placeholder="Quantity" formControlName="product_quantity" (focusout)="getCalculations()">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label> VAT (%) </mat-label>
+                        <input type="number" matInput placeholder="VAT" [value]="addedProducts[i]?.product_vat_percent" readonly>
+                    </mat-form-field>
+    
+                    <mat-form-field appearance="outline">
+                        <mat-label> Total </mat-label>
+                        <input type="number" matInput placeholder="Total" [ngModel]="(calculations?.invoice_details?.invoice_items[i]?.net_amount || 0)" [ngModelOptions]="{standalone: true}"
+                        readonly>
+                    </mat-form-field>
+
+                </div>
+
+            </div>
+            
+            <div class="full-width text-right"> 
+                <button mat-raised-button color="primary" type="button" (click)="addInvoiceItem()" class="margin-top-1" *ngIf="(invoiceForm?.value?.client_id || clientForm.valid)"> Add Item </button>
+            </div>
+    </form>
+
+    <div fxLayout="column" class="margin-top-2 invoice-items" *ngIf="calculations?.invoice_details?.invoice_items?.length">
+        <p class="final-amount-row"> 
+            <span>
+                Sub Total 
+            </span>
+    
+            <span>
+                {{ calculations?.invoice_details?.invoice_gross_amount }}
+            </span>
+        </p>
+    
+        <p class="final-amount-row">
+            <span>
+                Total Discount
+            </span>
+            <span>
+                {{ calculations?.invoice_details?.total_discount_amount }}
+            </span>
+        </p>
+        <p class="final-amount-row">
+            <span>
+                Total Tax
+            </span>
+            <span>
+                {{ calculations?.invoice_details?.total_tax_amount }}
+            </span>
+        </p>
+        <p class="final-amount-row">
+            <span>
+                Grand Total
+            </span>
+            <span>
+                {{ calculations?.invoice_details?.invoice_net_amount  }}
+            </span>
+        </p>
+    
+        <p class="text-center">
+            <button mat-raised-button color="accent" type="button" (click)="generateInvoice()" class="margin-top-1" [disabled]="!calculations?.invoice_details?.invoice_net_amount"> Generate Invoice </button>
+        </p>
+    
+    </div>
+
+</div> 
+

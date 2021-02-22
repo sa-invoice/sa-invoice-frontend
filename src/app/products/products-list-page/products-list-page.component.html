@@ -1,0 +1,41 @@
+<!-- <mat-list role="list">
+    <mat-list-item role="listitem" *ngFor="let product of products" [routerLink]="[product.product_id]">
+     <p>  {{ product.product_description }} </p>  
+     <p>  {{ product.product_discount_percent }} </p>    
+     <p>  {{ product.product_name }} </p>  
+     <p>  {{ product.product_price }} </p>  
+     <p>  {{ product.product_price_currency }} </p>  
+     <p>  {{ product.product_vat_percent }} </p>
+    </mat-list-item>
+</mat-list> -->
+
+<div class="invoice-section"> 
+
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-2 margin-top-2">
+        <ul class="list-unstyled list-inline margin-left-auto menu">
+            <li> <a routerLink="/products"> Products List </a> </li>
+            <li> <a routerLink="/products/add"> Add New Product </a> </li>
+            <li> <a routerLink="/invoice/invoice-list"> Invoice List </a> </li>
+            <li> <a routerLink="/invoice/invoice-generate"> Generate Invoice </a> </li>
+        </ul>
+    </div>
+
+    <h2> List of Products </h2>
+
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-2 margin-top-2"> 
+        <span fxFlex="20"> <b> Product Name </b> </span> 
+        <span fxFlex="20"> <b> Price </b> </span>
+        <span fxFlex="20"> <b> VAT (%)  </b> </span>
+        <span fxFlex="20"> <b> Discount (%)  </b> </span>
+        <span fxFlex="10"> <b> Edit </b> </span>
+    </div>
+        
+    <div *ngFor="let product of products" fxLayout="row" fxLayoutAlign="space-between"> 
+        <span fxFlex="30">  {{ product.product_name }} </span>
+        <span fxFlex="30">  {{ product.product_price }} </span>
+        <span fxFlex="30">  {{ product.product_vat_percent }} </span>
+        <span fxFlex="30">  {{ product.product_discount_percent }} </span>
+        <a fxFlex="10" color="primary" mat-button class="padding-left-0 text-align-left"  [routerLink]="[product.product_id]"> Edit </a>
+    </div>
+</div>
+  

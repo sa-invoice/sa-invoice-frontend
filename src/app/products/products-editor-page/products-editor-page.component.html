@@ -1,0 +1,64 @@
+
+<div class="wrapper-background">
+    <div fxLayout="row" fxLayoutAlign="space-between" class="margin-bottom-2">
+        <ul class="list-unstyled list-inline margin-left-auto menu">
+            <li> <a routerLink="/products"> Products List </a> </li>
+            <li> <a routerLink="/products/add"> Add New Product </a> </li>
+            <li> <a routerLink="/invoice/invoice-list"> Invoice List </a> </li>
+            <li> <a routerLink="/invoice/invoice-generate"> Generate Invoice </a> </li>
+        </ul>
+    </div>
+    <div class="center-content product-form">
+        <h1 *ngIf="mode == 'CREATE'"> ADD PRODUCT </h1>
+        <h1 *ngIf="mode == 'READ' || mode == 'EDIT'"> VIEW/EDIT PRODUCT  <a mat-button color="secondary" (click)="mode = 'EDIT'" class="position-absolute"> Edit </a> </h1>
+        <form class="example-form" [formGroup]="addProductForm">
+            <p>
+                <mat-form-field appearance="legacy">
+                    <mat-label> Name </mat-label>
+                    <input matInput placeholder="Name" formControlName="product_name" [readonly]="mode === 'READ'">
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="legacy">
+                    <mat-label> Price </mat-label>
+                    <input type="number" matInput placeholder="Price" formControlName="product_price" [readonly]="mode === 'READ'">
+                </mat-form-field>
+            </p>
+
+
+            <p>
+                <mat-form-field appearance="legacy">
+                    <mat-label> Discount (%) </mat-label>
+                    <input type="number" matInput placeholder="Id" formControlName="product_discount_percent" [readonly]="mode === 'READ'">
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="legacy">
+                    <mat-label> Markup (%) </mat-label>
+                    <input type="number" matInput placeholder="Id" formControlName="product_markup_percent" [readonly]="mode === 'READ'">
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="legacy">
+                    <mat-label> VAT (%) </mat-label>
+                    <input type="number" matInput placeholder="VAT" formControlName="product_vat_percent" [readonly]="mode === 'READ'">
+                </mat-form-field>
+            
+            </p>
+
+            <p>
+                <mat-form-field appearance="standard">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput placeholder="description" formControlName="product_description" [readonly]="mode === 'READ'"></textarea>
+                </mat-form-field>  
+            </p>
+                
+            <p>
+                <button mat-raised-button color="primary" type="submit" (click)="addProduct()" [disabled]="mode === 'READ'"> Submit </button>
+            </p>
+        </form>
+    </div>
+</div>
